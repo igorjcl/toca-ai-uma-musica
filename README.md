@@ -9,7 +9,7 @@ A aplicação receberá um input com informações fornecidas pelo usuário, tai
 
 ## ⚙️ Requerimentos
 
-### Obter a API key
+Obter a API key
 
 Configure a api key do GPT no arquivo .env.local (veja o exemplo .example.env.local):
 
