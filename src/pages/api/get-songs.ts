@@ -21,7 +21,14 @@ export default async function handler(
 ) {
   const { note } = JSON.parse(req.body);
 
-  let basePrompt = `Você poderia listar quatro músicas com apenas quatro acordes na tonalida de ${note} para violão? Gostaria de pelo menos quatro músicas diferentes e de nível básico, para que eu possa praticar. Me lista o nome da música, o cantor e o link do site com a cifra.  `;
+  let basePrompt = `
+    Por favor, sugira quatro músicas de nível básico para violão na tonalidade de ${note} maior,
+    sem o requisito do capotraste na cifra e com versões simplificadas em sites de cifras.
+    Por gentileza, inclua o nome da música, o cantor e o link para a cifra.
+    O objetivo é praticar e aprimorar minhas habilidades no violão.
+  `;
+
+  console.log(basePrompt)
 
   try {
     const response = await fetch("https://api.openai.com/v1/completions", {
