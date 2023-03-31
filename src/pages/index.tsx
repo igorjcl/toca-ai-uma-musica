@@ -45,9 +45,9 @@ export default function Home() {
       from-slate-950 via-blue-950 to-slate-950
      text-white flex flex-row items-center h-screen"
       >
-        <div className="grid grid-cols-2 mx-auto relative w-full max-w-4xl gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 mx-auto relative w-full max-w-md px-5 lg:px-0 lg:max-w-4xl gap-5">
           <div className="h-full flex flex-col justify-center items-start">
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2 flex-wrap">
               {notes.map((note) => (
                 <MusicalNote
                   onClick={() => setNoteSelected(note)}
@@ -66,14 +66,36 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="my-4 h-full flex flex-col justify-center items-center">
-            {loading && <SpinLoading />}
+          <div className="my-4 h-full flex flex-col justify-center items-center overflow-auto md:overflow-hidden">
+            {loading ? (
+              <SpinLoading />
+            ) : (
+              <h2 className="self-start mb-4 text-3xl font-extrabold">
+                Resultados:
+              </h2>
+            )}
             {songs.map((music, index) => (
               <div
-                key="index"
-                className="mb-2 px-3 py-4 bg-gray-800 rounded-lg"
+                key={index}
+                className="mb-2 max-w-md w-full text-sm lg:text-base px-3 py-4 bg-gray-800 rounded-lg"
               >
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: (props) => {
+                      return (
+                        <a
+                          className="text-blue-600 break-words"
+                          target="_blank"
+                          rel="no-opener"
+                          href={props.href}
+                        >
+                          {props.children}
+                        </a>
+                      );
+                    },
+                  }}
+                >
                   {music}
                 </ReactMarkdown>
               </div>
