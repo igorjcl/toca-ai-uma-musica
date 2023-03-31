@@ -19,8 +19,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  let basePrompt =
-    "Você poderia me ajudar a encontrar algumas músicas de forró com apenas quatro acordes na escala de Dó maior para violão? Gostaria de pelo menos quatro músicas diferentes e de nível básico, para que eu possa praticar. Me lista o nome da musica e o cantor";
+  const { note } = JSON.parse(req.body);
+
+  let basePrompt = `Você poderia listar quatro músicas com apenas quatro acordes na tonalida de ${note} para violão? Gostaria de pelo menos quatro músicas diferentes e de nível básico, para que eu possa praticar. Me lista o nome da música, o cantor e o link do site com a cifra.  `;
 
   try {
     const response = await fetch("https://api.openai.com/v1/completions", {

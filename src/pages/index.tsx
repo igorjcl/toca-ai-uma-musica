@@ -1,4 +1,7 @@
+import { Header } from "@/components/Headet";
+import { MusicalNote } from "@/components/MusicalNote";
 import { SpinLoading } from "@/components/SpinLoading";
+import { MusicalNoteType, notes } from "@/utils/notes";
 import { useState } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
@@ -6,12 +9,18 @@ import remarkGfm from "remark-gfm";
 export default function Home() {
   const [songs, setSongs] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [noteSelected, setNoteSelected] = useState<MusicalNoteType>(notes[0]);
 
   async function getSongs() {
     try {
       setLoading(true);
       setSongs([]);
-      const response = await fetch("/api/get-songs");
+      const response = await fetch("/api/get-songs", {
+        method: "POST",
+        body: JSON.stringify({
+          note: noteSelected.name,
+        }),
+      });
       const json = await response.json();
 
       setTimeout(() => {
@@ -19,7 +28,6 @@ export default function Home() {
       }, 7000);
 
       const musicList = JSON.parse(json.songs);
-      console.log(musicList);
 
       setSongs(musicList);
       setLoading(false);
@@ -29,22 +37,50 @@ export default function Home() {
   }
 
   return (
-    <main className="bg-gray-900 text-white flex flex-col items-center justify-center h-screen">
-      <h1 className="text-4xl">Músicas</h1>
-      <div className="my-4">
-        {loading && <SpinLoading />}
-        {songs.map((music, index) => (
-          <div key="index" className="mb-2 px-3 py-4 bg-gray-800 rounded-lg">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{music}</ReactMarkdown>
-          </div>
-        ))}
-      </div>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 mt-5 px-6 rounded-full"
-        onClick={getSongs}
+    <>
+      <Header />
+      <main
+        className="w-full bg-gradient-to-r 
+      bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] 
+      from-slate-950 via-blue-950 to-slate-950
+     text-white flex flex-row items-center h-screen"
       >
-        Gerar
-      </button>
-    </main>
+        <div className="grid grid-cols-2 mx-auto relative w-full max-w-4xl gap-5">
+          <div className="h-full flex flex-col justify-center items-start">
+            <div className="flex flex-row gap-2">
+              {notes.map((note) => (
+                <MusicalNote
+                  onClick={() => setNoteSelected(note)}
+                  key={note.id}
+                  name={note.name}
+                  isSelected={note.id === noteSelected.id}
+                />
+              ))}
+            </div>
+
+            <button
+              className="bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 mt-5 px-6 rounded-full"
+              onClick={getSongs}
+            >
+              Gerar
+            </button>
+          </div>
+
+          <div className="my-4 h-full flex flex-col justify-center items-center">
+            {loading && <SpinLoading />}
+            {songs.map((music, index) => (
+              <div
+                key="index"
+                className="mb-2 px-3 py-4 bg-gray-800 rounded-lg"
+              >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {music}
+                </ReactMarkdown>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    </>
   );
 }
